@@ -1,4 +1,6 @@
-use serenity::all::{ActivityData, CreateEmbed, CreateMessage, OnlineStatus, Ready};
+use serenity::all::{
+    ActivityData, CreateEmbed, CreateEmbedFooter, CreateMessage, OnlineStatus, Ready,
+};
 use serenity::prelude::Context;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -9,17 +11,30 @@ use crate::constants::CHANNELID_LOG_SECRET;
 pub async fn handle_ready(ctx: &Context, ready: Ready, is_ready_flag: &Arc<AtomicBool>) {
     let is_ready = is_ready_flag.load(Ordering::Relaxed);
 
+    let version_line = format!(
+        "v{} ({})",
+        env!("CARGO_PKG_VERSION"),
+        env!("GIT_DESCRIBE")
+    );
+    println!("Eara {version_line}");
+
     let embed_on;
     if is_ready {
         #[cfg(debug_assertions)]
         {
             println!("{} ?Reconnected", ready.user.name);
-            embed_on = CreateEmbed::new().title("?Reconnected").color(0x99657f);
+            embed_on = CreateEmbed::new()
+                .title("?Reconnected")
+                .footer(CreateEmbedFooter::new(version_line))
+                .color(0x99657f);
         }
         #[cfg(not(debug_assertions))]
         {
             println!("{} !Reconnected", ready.user.name);
-            embed_on = CreateEmbed::new().title("!Reconnected").color(0xff91c9);
+            embed_on = CreateEmbed::new()
+                .title("!Reconnected")
+                .footer(CreateEmbedFooter::new(version_line))
+                .color(0xff91c9);
         }
     } else {
         is_ready_flag.store(true, Ordering::Relaxed);
@@ -27,12 +42,18 @@ pub async fn handle_ready(ctx: &Context, ready: Ready, is_ready_flag: &Arc<Atomi
         #[cfg(debug_assertions)]
         {
             println!("{} ?On", ready.user.name);
-            embed_on = CreateEmbed::new().title("?On").color(0xba0962);
+            embed_on = CreateEmbed::new()
+                .title("?On")
+                .footer(CreateEmbedFooter::new(version_line))
+                .color(0xba0962);
         }
         #[cfg(not(debug_assertions))]
         {
             println!("{} !On", ready.user.name);
-            embed_on = CreateEmbed::new().title("!On").color(0xf7c8e0);
+            embed_on = CreateEmbed::new()
+                .title("!On")
+                .footer(CreateEmbedFooter::new(version_line))
+                .color(0xf7c8e0);
         }
 
         register_global_commands(&ctx.http).await;

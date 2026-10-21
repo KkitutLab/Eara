@@ -11,7 +11,12 @@ pub async fn handle_ping(ctx: &Context, command: &CommandInteraction, lng: bool)
         &ctx.http,
         command,
         lng_trs(lng, "📡 Delay", "📡 지연"),
-        &format!("{} ms", elapsed_ms),
+        &format!(
+            "{} ms\nv{} ({})",
+            elapsed_ms,
+            env!("CARGO_PKG_VERSION"),
+            env!("GIT_DESCRIBE")
+        ),
         0xed95c1,
         false,
     )
