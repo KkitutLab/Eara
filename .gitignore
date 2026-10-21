@@ -3,6 +3,9 @@
 .env.*
 !.env.example
 .sqlx
+.deploy-state
+.deploy.lock
+deploy.log
 **/*.rs.bk
 *.pdb
 .history

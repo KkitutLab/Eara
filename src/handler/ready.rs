@@ -7,6 +7,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 
 use crate::commands::slash::register_global_commands;
 use crate::constants::CHANNELID_LOG_SECRET;
+use crate::tasks::spawn_deploy_watch_task;
 
 pub async fn handle_ready(ctx: &Context, ready: Ready, is_ready_flag: &Arc<AtomicBool>) {
     let is_ready = is_ready_flag.load(Ordering::Relaxed);
@@ -57,6 +58,8 @@ pub async fn handle_ready(ctx: &Context, ready: Ready, is_ready_flag: &Arc<Atomi
         }
 
         register_global_commands(&ctx.http).await;
+
+        spawn_deploy_watch_task(ctx.http.clone());
     }
     ctx.set_presence(
         Some(ActivityData::listening("음성 로그")),

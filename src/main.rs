@@ -4,6 +4,7 @@ mod db;
 mod handler;
 mod macros;
 mod memory;
+mod tasks;
 mod utils;
 
 #[cfg(test)]
